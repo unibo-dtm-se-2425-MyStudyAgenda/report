@@ -1,4 +1,4 @@
-# Project work final report template
+# MyStudyAgenda Final Report
 
 [This repository](https://github.com/unibo-dtm-se-2425-MyStudyAgenda/report) contains the project documentation related to MyStudyAgenda, a software made by students (as part of a Software Engineering coursework assignment) for students, to assist them with time management and deadlines organization.
 
