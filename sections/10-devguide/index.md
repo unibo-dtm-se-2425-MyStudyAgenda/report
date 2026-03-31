@@ -35,11 +35,13 @@ Before starting new work, ensure your local main branch is up to date and create
 
     # Create and switch to a new feature branch
     git checkout -b feature/your-feature-name
+    ```
 
 2. Impementation:
 As you develop, you must regularly validate that your logic and UI components remain stable running the test suite.
     ```bash
     poetry run pytest
+    ```
 
 3. Pull Request Preparation:
 Once your code passes local tests, push your branch to the remote repository. This will trigger the CI workflow (`check.yml`), which validates your code across Ubuntu, Windows, and macOS using Python versions 3.10 through 3.12.
@@ -52,6 +54,7 @@ Once your code passes local tests, push your branch to the remote repository. Th
 
     # Push to GitHub to trigger the CI pipeline
     git push origin feature/your-feature-name
+    ```
 
 4. Pull Request and Peer Review
 After pushing your branch, navigate to the GitHub repository and open a Pull Request (PR) against the `main` branch.
@@ -67,4 +70,3 @@ Our repository is equipped with GitHub Actions that trigger on every push and pu
 * Command line: when in your preferred IDE, open the terminal to use the Command Line Interface and run the commands cited in this report.
 
 Please note that many instructions (e.g., staging changes, adding a commit message, etc.) have been described here as commands to perform in the command line because they universally work independently of the used IDE. However, many IDEs (such as Visual Studio Code) provide intuitive GUIs to perform the same actions. 
-

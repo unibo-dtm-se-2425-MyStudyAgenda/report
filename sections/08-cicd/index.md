@@ -53,6 +53,7 @@ The CI workflow is defined in `check.yml` and is split into two jobs.
 
     ```bash
     pytest -m "not ui"
+    ```
 
 This job focuses on:
 - business logic,
@@ -67,6 +68,7 @@ GUI Tests Job
 - Runs tests explicitly marked as UI tests:
     ```bash
     xvfb-run -a pytest -m "ui"
+    ```
 
 This approach allows automated testing of Kivy screens and widgets in a headless CI environment.
 

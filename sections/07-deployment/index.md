@@ -16,6 +16,7 @@ This section explains how to set up **MyStudyAgenda** on a local machine. Here a
 
    ```bash
    python --version
+   ```
 
 ## 1. Standard Installation (Recommended)
 The easiest way to install the application is via **TestPyPI**. This method automatically handles dependencies without requiring you to download the source code manually.
@@ -26,14 +27,17 @@ The easiest way to install the application is via **TestPyPI**. This method auto
    python -m venv venv
    source venv/bin/activate # On Linux and MacOS, or
    source venv\Scripts\activate # On Windows
+   ```
 
 2. **Install from TestPyPI:** Since the project is hosted on the TestPyPI repository, use the following command:
     ```bash
     pip install -i https://test.pypi.org/simple/ mystudyagenda
+    ```
 
 3. **Run the application**:
     ```bash
     python -m MyStudyAgenda
+    ```
 
 ## 2. Manual Release Download
 If you prefer not to use a package manager, you can download the source artifacts directly from the project's GitHub repository.
@@ -55,17 +59,20 @@ Use this method if you want to modify the code or contribute to the project. Thi
 1. **Clone the repository:**
     ```bash
     git clone https://github.com/unibo-dtm-se-2425-MyStudyAgenda
-    cd artfact
+    cd artifact
+    ```
 
 2. **Install project dependencies:**
 Poetry will create a virtual environment and install Kivy, KivyMD, and other required libraries automatically.
     ```bash
     poetry install
+    ```
 
 3. **Make sure the application can run correctly on your local environment**:
 Run the test suite to confirm the environment is correctly set and ready to run the software.
     ```bash
     poetry run pytest
+    ```
 
 4. **Running the application:**
     ```bash
