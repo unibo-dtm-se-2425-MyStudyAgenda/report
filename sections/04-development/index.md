@@ -8,35 +8,33 @@ nav_order: 5
 
 ## DVCS
 
-- This section explains how DVCS was used, in particular:
-    - Conventions on the usage of branches
-    - Conventions for commit messages 
-    - Conventions for pull requests, issues, code reviews, etc.
+The project was entirely developed using Git and hosted on GitHub in a single branch (`main`).  
+Since the author worked alone, there was no need for pull requests, merges, or branch management conventions.  
+
+However, commit messages were written following the [Conventional Commits](https://www.conventionalcommits.org/) specification, ensuring clarity and consistency.  
+This makes the development history easier to read and maintain, even for future developers.
 
 ## Implementation details
 
-- Which network protocols should be used? Why?
-    - Examples: UDP, TCP, HTTP, WebSockets, gRPC, XMPP, AMQP, MQTT, etc.
+- **Network protocols**: The application runs locally on the user’s machine and does not rely on any network communication. Therefore, no protocols such as HTTP or WebSockets were required.  
 
-- How should in-transit data be represented? Why?
-    - Examples: JSON, XML, YAML, Protocol Buffers, etc.
+- **In-transit data representation**: Not applicable, since no network communication is involved.  
 
-- How should databases be queried? Why?
-    - Examples: SQL, NoSQL, etc.
+- **Database queries**: The application uses SQLite as its persistence layer, accessed through SQL queries. This choice was made because SQLite is lightweight, embedded, and does not require a separate server, making it suitable for a desktop application.  
 
-- How should components be authenticated? Why?
-    - Examples: OAuth, JWT, etc.
-
-- How should components be authorized? Why?
-    - Examples: RBAC, ABAC, etc.
+- **Authentication & Authorization**: Not applicable, since the application does not involve user accounts or remote access. All data is stored locally on the user’s machine.
 
 ## Technological details
 
-- Which programming languages, frameworks, libraries, and tools were used? Why?
-    - Examples: Java, Python, C++, JavaScript, React, Angular, Vue, etc.
+- **Programming language**: The software was developed in **Python**, due to its readability, wide adoption in education, and strong ecosystem for GUI development and testing.
 
-- Which libraries do the project depend on? Why?
-    - Examples: React, Redux, Express, etc.
+- **Frameworks and libraries**:  
+  - **Kivy** and **KivyMD**: for building the cross-platform desktop GUI with a modern look and feel.  
+  - **SQLite**: for local data persistence.  
+  - **unittest / pytest**: for testing the application components.
 
-- Are there any other external technology or service dependencies? Why?
-    - Examples: Google Maps, Firebase, etc.
+- **Tools**:  
+  - **Visual Studio Code**: as the main development environment.  
+  - **GitHub**: for version control and hosting the repository.  
+
+- **External dependencies**: None. The application is entirely self-contained and does not rely on external APIs or third-party services.
