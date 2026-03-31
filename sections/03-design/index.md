@@ -8,92 +8,148 @@ nav_order: 4
 
 This chapter explains the strategies used to meet the requirements identified in the analysis. 
 
-Ideally, the design should be the same, regardless of the technological choices made during the implementation phase.
-
-> You can re-order the sections as you prefer, but all the sections must be present in the end
+It describes the chosen architecture, the responsibilities of each component, how data is modelled and stored, and how the pieces interact at runtime.
 
 ## Architecture 
 
-- Which architectural style (e.g. layered, object-based, event-based, shared dataspace)? Why? Why not the others?
-- Provide details about the actual architecture (e.g. N-tier, hexagonal, etc.) you are going to adopt. Motivate your choice.
-- Provide a high-level overview of the architecture, possibly with a diagram
-- Describe the responsibilities of each architectural component
+### Architectural style and motivation
+MyStudyAgenda is a single-machine desktop application with a graphical user interface and a local persistence layer. The chosen architectural style is layered/modular with a clear separation of concerns:
+- **Domain layer (Model)**: business objects (Task, Topic, Note) and pure domain logic
+- **Persistence layer (DAO/Database)**: DAOs that abstract SQLite operations
+- **Application layer (Controller)**: controllers that implement use cases and orchestrate DAOs and models
+- **Presentation layer (View)**: UI screens, popups and widgets implemented with Kivy and KivyMD
 
-> UML Components diagrams are welcome here
+A layered approach fits well for a standalone desktop app: it provides clarity, testability and a straightforward mapping to the codebase structure implemented (app.view, app.controller, app.model, app.db). Other styles (microservices, event-based distributed architectures) would be overkill for this application because the system runs locally without networked components.
 
-## Infrastructure (mostly applies to distributed systems)
+### Chosen concrete architecture
+The adopted architecture is an N-tier (4-layer) architecture described above. Each layer has restricted dependencies: the UI depends on controllers; controllers depend on models and DAOs; DAOs depend on the database driver. This keeps coupling low and makes unit testing easier (controllers and DAOs can be tested in memory).
 
-- Are there **infrastructural components** that need to be introduced? Which and **how many** of each?
-    - e.g. **clients**, **servers**, **load balancers**, **caches**, **databases**, **message brokers**, **queues**, **workers**, **proxies**, **firewalls**, **CDNs**, etc.
-- How do components **distribute** over the network? **Where** are they located?
-    - e.g. do servers / brokers / databases / etc. sit on the same machine? on the same network? on the same datacenter? on the same continent?
-- How do components **find** each other?
-    - How to **name** components?
-    - e.g. **DNS**, **service discovery**, **load balancing**, etc.
+### High-level component overview
+Below is a simple component diagram (made with PlantUML) showing major pieces:
 
-> UML deployment diagrams are welcome here
+>Component Diagram
+<img src="../../pictures/ComponentDiagram.png" style="width: 40%; height: auto;">
+
+### Responsibilities
+- **UI (Views and Widgets)**: render data, collect user input, show popups and lists. No persistence logic. Minimal logic: formatting, input validation that is purely presentational.
+- **Controllers**: implement application use cases (create task, schedule task, mark complete, etc.). They convert user input into domain objects and call DAOs. They return domain objects to the UI.
+- **Domain Models**: represent primitive objects Task, Topic, Note.
+- **DAOs / Database**: encapsulate SQL schema, mapping between domain objects and table rows, and transaction management.
+
+## Infrastructure
+
+This is a single-process desktop application. therefore infrastructure needs are minimal.
+- **Clients**: single desktop client (the application itself)
+- **Servers / Brokers**: none
+- **Database**: local SQLite file (planner.db) or in-memory when running tests
+
+All components run inside the same OS process and machine. The database file is persisted on the same machine (or in-memory for tests).
 
 ## Modelling
 
 ### Domain driven design (DDD) modelling
 
-- Which are the bounded contexts of your domain? 
-- Which are domain concepts (entities, value objects, aggregates, etc.) for each context?
-- Are there repositories, services, or factories for each/any domain concept?
-- What are the relavant domain events in each context?
+#### Bounded contexts (DDD-style)
 
-> Context map diagrams are welcome here
+Given the small scope, there is effectively one bounded context: Personal Planner. Within it we can identify four main subdomains:
+
+- Task management: tasks and scheduling, priorities, completion state.
+- Note management: creating and editing notes bound to topics.
+- Topic management: categorization used by tasks and notes.
+- Utilities: Pomodoro timer and planner rendering (view only concerns).
+
+No separate microservices or external contexts are required.
 
 ### Object-oriented modelling
 
-- What are the main data types (e.g. classes) of the system?
-- What are the main attributes and methods of each data type?
-- How do data types relate to each other?
+The key domain entities and value objects of the software are:
+- Topic
+    - id: int
+    - name: str
+- Task
+    - id: int
+    - description: str
+    - topic: Topic | None
+    - priority: int
+    - is_completed: bool
+    - scheduled_date: date | None
+    - start_time: time | None
+    - end_time: time | None
+    - methods: `mark_completed`, `mark_notcompleted`
+- Note
+    - id: int
+    - title: str
+    - topic: Topic | None
+    - content: str
+    - created_at: datetime
 
-> UML class diagrams are welcome here
+Repositories/DAOs:
+- TopicDAO, TaskDAO, NoteDAO encapsulate SQL for CRUD operations
 
-### In case of a distributed system
-
-- How do the domain concepts map to the architectural or infrastuctural components?
-    + i.e. which architectural/component is responsible for which domain concept?
-    + are there data types which are required onto multiple components? (e.g. messages being exchanged between components)
-
-- What are the domain concepts or data types which represent the state of the distributed system?
-    + e.g. state of a video game on central server, while inputs/representations on clients
-    + e.g. where to store messages in an instant-messaging app? for how long?
-
-- Are there domain concepts or data types which represent messages being exchanged between components?
-    + e.g. messages between clients and servers, messages between servers, messages between clients
+>Class Diagram
+<img src="../../pictures/ClassDiagram.png" style="width: 40%; height: auto;">
 
 ## Interaction
 
-- How do components *communicate*? *When*? *What*?
+### How components communicate
+- UI → Controller: synchronous direct calls (method invocation) when the user performs actions (button presses)
+- Controller → DAO: synchronous direct calls; DAOs perform SQL queries and return results
+- DAO → Database: SQL executed via sqlite3 library; commits are controlled by DAOs
 
-- Which **interaction patterns** do they enact?
+There is no network I/O and no inter-process communication. Interaction patterns are simple request/response within a single process.
 
-> UML sequence diagrams are welcome here
+>UML sequence diagram example: *create task*
+<img src="../../pictures/SequenceDiagram.png" style="width: 40%; height: auto;">
 
 ## Behaviour
 
-- How does **each** component *behave* individually (e.g., in *response* to *events* or messages)?
-    + Some components may be *stateful*, others *stateless*
+### Components behaviour summary
+- **UI**: reacts to user events (on_text, on_release) and calls controllers. Stateless with respect to domain except for temporary UI state (selected spinner item, inputs)
+- **Controllers**: stateless from request perspective, they perform operations and return results. They encapsulate transactional boundaries: e.g. create_task calls DAO and interprets result
+- **DAOs**: stateful as they hold a DB connection; they ensure atomic commits for modifications
+- **Models**: may hold state (e.g. is_completed) and expose domain methods to mutate themselves
 
-- Which components are in charge of updating the **state** of the system? *When*? *How*?
+### Which components update state
+- DAOs perform persistence updates (INSERT, UPDATE, DELETE). Controllers call DAOs when a use case requires a state change.
+- In-memory model state is updated by controllers or model methods; persistence happens via DAOs.
 
-> UML state diagrams or activity diagrams are welcome here
+### Timer / UI background behaviour
+Pomodoro timer uses `Clock.schedule_interval` for ticking; it is UI-bound and purely local. Kivy manages these scheduled calls through its main event loop, which is the core mechanism that keeps the application running and responsive. In unit tests, real time is not allowed to elapse; instead, clock ticks are simulated by manually advancing Kivy’s clock, which makes it possible to verify the timer’s behavior quickly and without delays.
 
-## Data-related aspects (in case persistent storage is needed)
+>Activity Diagram
+<img src="../../pictures/ActivityDiagram.png" style="width: 30%; height: auto;">
 
-- Is there any data that needs to be stored?
-    - *What* data? *Where*? *Why*?
+## Data-related aspects
 
-- How should **persistent data** be **stored**? Why?
-    - e.g., relations, documents, key-value, graph, etc.
+### Data to be stored
+- Tasks: id, description, topic_id, priority, completion state, scheduled date, start/end times.
+- Topics: id, name.
+- Notes: id, title, topic_id, content, created_at timestamp.
 
-- Which components perform queries on the database?
-    - *When*? *Which* queries? *Why*?
-    - Concurrent read? Concurrent write? Why?
+These are user personal data stored locally. There is no authentication or multi-user support.
 
-- Is there any data that needs to be shared between components?
-    - *Why*? *What* data?
+### Storage choice
+SQLite (relational) was chosen as the storage approach because it is lightweight and embedded, ideal for desktop applications.
 
+### Schema responsibilities
+DAOs are responsible for:
+- Creating tables
+- Mapping between Python objects and rows
+- Managing the DB connection lifecycle (commit/close)
+
+### Queries and concurrency
+Typical queries are CRUD and read-all operations.
+
+Concurrent access is unlikely as it is a single process application, so SQLite default locking semantics suffice.
+
+For unit tests the database is instantiated in-memory to ensure isolation.
+
+### Data sharing between components
+Controllers obtain domain objects from DAOs and pass them to UI. No server-side sharing or synchronization is implemented.
+
+## Notes about extensibility and future improvements
+The software was voluntarily primarily developed to be a simple offline desktop application, exactly because of its main objective: increasing focus and productivity for students. With respect to this goal, being forced to use internet connection could be detrimental.
+
+However, for future improvements it could be cconsidered the fact that a user might want to see his tasks, notes and planner on multiple devices. If multi-device syncronization or remote storage were required, a local SQLite database would no longer be suitable. Instead, other technologies should be used (e.g. Google Firebase). In this case, an authentication procedure would be necessary and, preferably, encryption of each user’s personal data, including their individual tasks and notes.
+
+Moreover, for richer scheduling or recurring tasks, domain model would need additional fields and business rules.
