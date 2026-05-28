@@ -8,26 +8,22 @@ nav_order: 7
 ## Produced artefacts
 
 The project produces a single software artefact: a Python application called **MyStudyAgenda**.
-The application is packaged as a Python package using **Poetry**, which generates both a source
-distribution (`sdist`) and a built distribution (`wheel`).
+The application is packaged as a Python package using **Poetry**, which generates both a source distribution (`sdist`) and a built distribution (`wheel`).
 
-No additional artefacts (e.g. Docker images or separate libraries) are produced, since the project
-is designed as a single, self-contained desktop application.
+No additional artefacts (e.g. Docker images or separate libraries) are produced, since the project is designed as a single, self-contained desktop application.
 
 
 ## Distribution platforms
 
 The artefact is intended to be released on **TestPyPI**.
-This choice allows validating the packaging and release process in a safe environment before
-publishing on the official PyPI repository.
+This choice allows validating the packaging and release process in a safe environment before publishing on the official PyPI repository.
 
 Additionally, each release is published as a **GitHub Release**, which contains:
 - the packaged artefacts
 - the corresponding version tag
 - the changelog associated with the release
 
-GitHub was chosen because it is the main repository hosting the project and integrates seamlessly
-with GitHub Actions.
+GitHub was chosen because it is the main repository hosting the project and integrates seamlessly with GitHub Actions.
 
 ---
 
@@ -35,9 +31,8 @@ with GitHub Actions.
 
 The release process is **manual but automated**.
 
-A dedicated GitHub Actions workflow (`deploy.yml`) is responsible for building and releasing the
-artefacts. The workflow is triggered only when:
-- a version tag following semantic versioning (e.g. `v0.1.0`) is pushed, or
+A dedicated GitHub Actions workflow (`deploy.yml`) is responsible for building and releasing the artefacts. The workflow is triggered only when:
+- a version tag following semantic versioning (e.g. `v1.2.3`) is pushed, or
 - the workflow is manually triggered via `workflow_dispatch`.
 
 The release workflow performs the following steps:
@@ -66,29 +61,18 @@ It allows reuse, modification, and redistribution of the software with minimal r
 The project follows **Semantic Versioning (SemVer)**.
 
 Each version is expressed in the form MAJOR.MINOR.PATCH, where
-
 - MAJOR versions indicate incompatible or major changes
 - MINOR versions introduce new features while maintaining backward compatibility
 - PATCH versions contain bug fixes and small improvements
-
-Since the project produces a single artefact, a single version number is used for the entire system.
 
 ## Creating a new release
 
 The project follows a lightweight but structured release process.
 
-Before creating a new release, the `CHANGELOG.md` file is manually updated to summarize
-the changes introduced since the previous version. Each release entry follows the
-Semantic Versioning convention and includes a brief description of new features,
-improvements, and fixes.
+Before creating a new release, the `CHANGELOG.md` file is manually updated to summarize the changes introduced since the previous version. Each release entry follows the Semantic Versioning convention and includes the release date and a brief description of new features, improvements, fixes.
 
-Once the changelog is updated, the version number in `pyproject.toml` is aligned with
-the intended release version. A Git tag matching the version number (e.g. `v0.1.0`)
-is then created and pushed to the remote repository (with the terminal commands `git tag v0.1.0` and `git push origin v0.1.0` respectively).
+Once the changelog is updated, the version number in `pyproject.toml` is aligned with the intended release version. A Git tag matching the version number (e.g. `v1.2.3`) is then created and pushed to the remote repository (with the terminal commands `git tag v1.2.3` and `git push origin v1.2.3` respectively).
 
-Pushing the tag automatically triggers the release workflow, which builds and publishes the artefact
-and creates a corresponding GitHub Release.
+Pushing the tag automatically triggers the release workflow, which builds and publishes the artefact and creates a corresponding GitHub Release.
 
-Pushing a version tag automatically triggers the Continuous Deployment workflow,
-which builds and publishes the artefact
-and creates a corresponding GitHub Release using the contents of the `CHANGELOG.md`.
+Pushing a version tag automatically triggers the Continuous Deployment workflow, which builds and publishes the artefact and creates a corresponding GitHub Release using the contents of the `CHANGELOG.md`.

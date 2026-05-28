@@ -17,6 +17,11 @@ This section explains how to set up **MyStudyAgenda** on a local machine. Here a
    ```bash
    python --version
    ```
+   on Windows and Linux, or
+    ```bash
+   python3 --version
+   ```
+   on MacOS.
 
 ## 1. Standard Installation (Recommended)
 The easiest way to install the application is via **TestPyPI**. This method automatically handles dependencies without requiring you to download the source code manually.
@@ -36,7 +41,7 @@ The easiest way to install the application is via **TestPyPI**. This method auto
 
 3. **Run the application**:
     ```bash
-    python -m MyStudyAgenda
+    python -m mystudyagenda
     ```
 
 ## 2. Manual Release Download
@@ -45,7 +50,7 @@ If you prefer not to use a package manager, you can download the source artifact
 1. Go to the [GitHub Releases](https://github.com/unibo-dtm-se-2425-MyStudyAgenda/artifact/releases) page.
 2. Download the .zip or .tar.gz archive from the latest version tag.
 3. Extract the archive.
-4. Install the requirements and run as described in the section below.
+4. Install the requirements and run as described in the section below (starting from step 2).
 
 ## 3. Developer Installation (Source Code)
 Use this method if you want to modify the code or contribute to the project. This requires Poetry, the project's dependency manager.

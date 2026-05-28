@@ -20,10 +20,11 @@ The main goals of the CI/CD workflow are:
 The CI pipeline automatically executes:
 
 - **Unit tests** for model, DAO, controller, and non-GUI logic
-- **GUI tests** for the Kivy-based user interface
 - Tests across:
   - multiple operating systems (Linux, Windows, macOS)
   - multiple Python versions (3.10, 3.11, 3.12)
+
+While it skips **GUI tests** for the Kivy-based user interface, as GUI tests require a window provider and OpenGL context, which are not available in headless CI environments.
 
 The CI workflow is triggered on:
 - every `push` (excluding documentation-only files),
@@ -34,43 +35,30 @@ The CI workflow is triggered on:
 
 Automating testing ensures that:
 - platform-specific issues are detected early,
-- GUI-related regressions are caught despite the graphical nature of the application,
 - changes merged into the main branch preserve functional correctness.
-
-Given the complexity of testing a GUI framework like **Kivy**, the CI pipeline explicitly separates **logic tests** from **GUI tests**.
 
 ### How
 
-The CI workflow is defined in `check.yml` and is split into two jobs.
+The CI workflow is defined in `check.yml` and consists of a single, comprehensive testing job.
 
-#### Unit Tests Job
+#### Test Job
 
 - Runs on **Linux, Windows, and macOS**
-- Uses a **matrix strategy** for Python versions
-- Installs system-level dependencies required by Kivy (on Linux only)
-- Installs project dependencies via **Poetry**
-- Executes tests marked as *non-UI*:
+- Uses a **matrix strategy** to test across Python versions 3.10, 3.11, and 3.12
+- Installs essential system-level dependencies required by Kivy on Linux runners, such as `libsdl2-dev` and `libgl1-mesa-dev`
+- Manages environment isolation and project dependencies via **Poetry**
+- Executes the full suite of tests using `pytest`:
 
     ```bash
-    pytest -m "not ui"
+    poetry run pytest
     ```
 
-This job focuses on:
-- business logic,
-- persistence layer,
+This job focuses on validating:
+- business logic (Model layer),
+- persistence layer (DAO),
 - controllers,
-- non-graphical components.
-
-GUI Tests Job
-- Runs only if unit tests succeed
-- Executes on Ubuntu for maximum stability
-- Uses Xvfb (X virtual framebuffer) to simulate a display server
-- Runs tests explicitly marked as UI tests:
-    ```bash
-    xvfb-run -a pytest -m "ui"
-    ```
-
-This approach allows automated testing of Kivy screens and widgets in a headless CI environment.
+- non-graphical components and general logic,
+- system functioning through all the layers.
 
 #### Environment variables
 
@@ -78,15 +66,13 @@ Several environment variables are configured to adapt Kivy to CI execution:
 
 `KIVY_NO_ARGS=1` – prevents Kivy from parsing command-line arguments
 
-`KIVY_NO_CONSOLELOG=1` – disables verbose logging
+`KIVY_BACKEND=offscreen` – forces Kivy to use an offscreen rendering backend, bypassing the need for a display server
 
-`KIVY_LOG_LEVEL=error` – reduces log noise
-
-`PYTHONPATH=.` – ensures correct module resolution
+`PYTHONPATH=.` – ensures correct module resolution so that the package can be imported during testing
 
 `CI=true` – signals execution inside a CI environment
 
-Dependency caching is also enabled to speed up repeated workflow runs.
+The job also includes a concurrency configuration to automatically cancel redundant runs on the same branch or PR, optimizing resource usage.
 
 ## Continuous Deployment (CD)
 
@@ -118,5 +104,5 @@ The CD workflow is defined in deploy.yml and performs the following steps:
 
 ### Secrets and permissions
 The CD pipeline relies on two main secrets:
-* `TEST_PYPI_TOKEN`,which is used to authenticate the publication to TestPyPI
+* `TEST_PYPI_TOKEN`, which is used to authenticate the publication to TestPyPI
 * `GITHUB_TOKEN`, which is automatically provided by GitHub Actions and used to create GitHub Releases

@@ -6,7 +6,7 @@ nav_order: 4
 
 # Design
 
-This chapter explains the strategies used to meet the requirements identified in the analysis. 
+This chapter explains the strategies used to meet the requirements identified in the previous section. 
 
 It describes the chosen architecture, the responsibilities of each component, how data is modelled and stored, and how the pieces interact at runtime.
 
@@ -17,15 +17,15 @@ MyStudyAgenda is a single-machine desktop application with a graphical user inte
 - **Domain layer (Model)**: business objects (Task, Topic, Note) and pure domain logic
 - **Persistence layer (DAO/Database)**: DAOs that abstract SQLite operations
 - **Application layer (Controller)**: controllers that implement use cases and orchestrate DAOs and models
-- **Presentation layer (View)**: UI screens, popups and widgets implemented with Kivy and KivyMD
+- **Presentation layer (View)**: UI screens, popups and widgets implemented with Kivy
 
-A layered approach fits well for a standalone desktop app: it provides clarity, testability and a straightforward mapping to the codebase structure implemented (app.view, app.controller, app.model, app.db). Other styles (microservices, event-based distributed architectures) would be overkill for this application because the system runs locally without networked components.
+A layered approach fits well for a standalone desktop app: it provides clarity, testability and a straightforward mapping to the codebase structure implemented. Other styles (microservices, event-based distributed architectures) would be overkill for this application because the system runs locally without networked components.
 
 ### Chosen concrete architecture
 The adopted architecture is an N-tier (4-layer) architecture described above. Each layer has restricted dependencies: the UI depends on controllers; controllers depend on models and DAOs; DAOs depend on the database driver. This keeps coupling low and makes unit testing easier (controllers and DAOs can be tested in memory).
 
 ### High-level component overview
-Below is a simple component diagram (made with PlantUML) showing major pieces:
+Below is a simple component diagram showing major pieces:
 
 >Component Diagram
 <img src="../../pictures/ComponentDiagram.png" style="width: 40%; height: auto;">
@@ -104,10 +104,10 @@ There is no network I/O and no inter-process communication. Interaction patterns
 ## Behaviour
 
 ### Components behaviour summary
-- **UI**: reacts to user events (on_text, on_release) and calls controllers. Stateless with respect to domain except for temporary UI state (selected spinner item, inputs)
-- **Controllers**: stateless from request perspective, they perform operations and return results. They encapsulate transactional boundaries: e.g. create_task calls DAO and interprets result
-- **DAOs**: stateful as they hold a DB connection; they ensure atomic commits for modifications
-- **Models**: may hold state (e.g. is_completed) and expose domain methods to mutate themselves
+- **UI**: reacts to user events (on_text, on_release) and calls controllers. Stateless with respect to domain except for temporary UI state (selected spinner item, inputs).
+- **Controllers**: stateless from request perspective, they perform operations and return results. They encapsulate transactional boundaries: e.g. create_task calls DAO and interprets result.
+- **DAOs**: stateful as they hold a DB connection; they ensure atomic commits for modifications.
+- **Models**: may hold state (e.g. is_completed) and expose domain methods to mutate themselves.
 
 ### Which components update state
 - DAOs perform persistence updates (INSERT, UPDATE, DELETE). Controllers call DAOs when a use case requires a state change.
@@ -122,9 +122,9 @@ Pomodoro timer uses `Clock.schedule_interval` for ticking; it is UI-bound and pu
 ## Data-related aspects
 
 ### Data to be stored
-- Tasks: id, description, topic_id, priority, completion state, scheduled date, start/end times.
+- Tasks: id, description, topic id, priority, completion state, scheduled date, start/end times.
 - Topics: id, name.
-- Notes: id, title, topic_id, content, created_at timestamp.
+- Notes: id, title, topic id, content, created_at timestamp.
 
 These are user personal data stored locally. There is no authentication or multi-user support.
 
@@ -150,6 +150,6 @@ Controllers obtain domain objects from DAOs and pass them to UI. No server-side 
 ## Notes about extensibility and future improvements
 The software was voluntarily primarily developed to be a simple offline desktop application, exactly because of its main objective: increasing focus and productivity for students. With respect to this goal, being forced to use internet connection could be detrimental.
 
-However, for future improvements it could be cconsidered the fact that a user might want to see his tasks, notes and planner on multiple devices. If multi-device syncronization or remote storage were required, a local SQLite database would no longer be suitable. Instead, other technologies should be used (e.g. Google Firebase). In this case, an authentication procedure would be necessary and, preferably, encryption of each user’s personal data, including their individual tasks and notes.
+However, for future improvements it could be considered the fact that a user might want to see his tasks, notes and planner on multiple devices. If multi-device syncronization or remote storage were required, a local SQLite database would no longer be suitable. Instead, other technologies should be used (e.g. Google Firebase). In this case, an authentication procedure would be necessary and, preferably, encryption of each user’s personal data, including their individual tasks and notes.
 
 Moreover, for richer scheduling or recurring tasks, domain model would need additional fields and business rules.

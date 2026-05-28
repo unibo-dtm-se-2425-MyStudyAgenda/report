@@ -10,8 +10,9 @@ nav_order: 3
 
 - As a student, I want to create, tick as completed and delete tasks so that I can keep track of my study activities.  
 - As a student, I want to assign priorities and time slots to tasks so that I can better plan my weekly schedule.
-- As a student, I want to visualize my scheduled tasks in a weekly planner so that I have a clear idea of how my days are organized.   
-- As a student, I want to create and organize notes under specific topics so that I can easily retrieve study materials.  
+- As a student, I want to visualize my scheduled tasks in a weekly planner so that I have a clear idea of how my days are organized.
+- As a student, I want to create and delete topics to assign to specific tasks and notes to better organize them.   
+- As a student, I want to create, edit and delete notes so that I can easily retrieve study materials.  
 - As a student, I want to use a Pomodoro timer so that I can study in focused sessions with breaks.  
 - As a student, I want to view my tasks and notes in a simple, clear interface so that I can quickly access what I need. 
 
@@ -26,18 +27,18 @@ nav_order: 3
    - *Acceptance criteria*: user can add a task, modify it, and remove it; the changes must be reflected immediately in the task list.
 
 2. The system must allow the creation, update, and deletion of notes.  
-   - *Acceptance criteria*: user can add a note, modify it, and remove it.
+   - *Acceptance criteria*: user can add a note, modify it, and remove it; the changes must be reflected immediately in the notes list.
 
-3. The system must support topic creation and allow associating tasks and notes with topics.  
-   - *Acceptance criteria*: user can create a topic; tasks and notes linked to it must show the topic’s name.  
+3. The system must support topic creation and deletion and allow associating tasks and notes with topics.  
+   - *Acceptance criteria*: user can create a topic and remove it; tasks and notes linked to it must show the topic’s name.  
 
 4. The system must provide a weekly planner to visualize scheduled tasks.  
-   - *Acceptance criteria*: the planner shows tasks distributed across the days of the week, based on their scheduled time slot; in the planner, tasks are represented as rectangles with different colours based on their priority (green for low, yellow for medium, red for high priority).
+   - *Acceptance criteria*: the planner shows tasks distributed across the days of the week, based on their scheduled time slot; in the planner, tasks are represented as rectangles with different colours based on their priority (green for low, yellow for medium, red for high priority) and indicate task's description and (if any) the associated topic.
 
 5. The system must provide a Pomodoro timer with customizable study and break durations.  
-   - *Acceptance criteria*: user can start a Pomodoro session, see the countdown, and be notified when a session ends. User can also interrupt the timer. 
+   - *Acceptance criteria*: user can start a Pomodoro session, see the countdown, and be notified by an alert dialog when a session ends. User can also interrupt the Pomodoro session. 
 
-6. The system must update the graphical interface immediately after each operation (e.g. task/note creation, deletion).  
+6. The system must update the graphical interface immediately after each operation (e.g. task/note/topic creation, deletion).  
    - *Acceptance criteria*: no manual refresh is required; the UI reflects the latest data.  
 
 ### Non-functional requirements
@@ -54,13 +55,13 @@ nav_order: 3
 ### Implementation requirements
 
 1. The system must be developed in Python.  
-   - *Motivation*: requirement of the Software Engineering course.  
+   - *Motivation*: Cross-platform language with a vast ecosystem of open-source libraries, significantly reducing development time compared to languages like C++ or Java. Its high readability and widespread adoption make it ideal for open-source collaboration and rapid prototyping.
 
-2. The application must use Kivy / KivyMD for the graphical user interface.  
-   - *Motivation*: ensures cross-platform compatibility and allows a native-like GUI in Python.  
+2. The application must use Kivy for the graphical user interface.  
+   - *Motivation*: Ensures cross-platform compatibility and allows a native-like GUI in Python.  
 
 3. The application must use SQLite for local data persistence.  
-   - *Motivation*: lightweight relational database, easy to embed and distribute with the application.  
+   - *Motivation*: Lightweight relational database, easy to embed and distribute with the application.  
 
 ## Glossary
 

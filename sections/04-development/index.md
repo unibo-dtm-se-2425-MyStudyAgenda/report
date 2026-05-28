@@ -29,7 +29,7 @@ This makes the development history easier to read and maintain, even for future 
 - **Programming language**: The software was developed in **Python**, due to its readability, wide adoption in education, and strong ecosystem for GUI development and testing.
 
 - **Frameworks and libraries**:  
-  - **Kivy** and **KivyMD**: for building the cross-platform desktop GUI with a modern look and feel.  
+  - **Kivy**: for building the cross-platform desktop GUI with a simple and clean look.  
   - **SQLite**: for local data persistence.  
   - **unittest / pytest**: for testing the application components.
 

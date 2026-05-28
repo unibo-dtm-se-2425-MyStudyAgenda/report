@@ -23,22 +23,21 @@ Different testing frameworks were adopted depending on the nature of the compone
 The **Model**, **DAO**, and **Controller** layers were tested exclusively using the `unittest` framework.  
 These components implement pure business logic and data access logic, are deterministic, and do not depend on external runtime environments or graphical subsystems. For this reason, the standard Python testing framework was considered sufficient and appropriate.
 
-However, the **View layer**, implemented using Kivy/KivyMD, required a different approach. GUI components depend on an event-driven architecture, a graphical event loop, and platform-specific initialization. While the test cases themselves are still structured as `unittest.TestCase` classes, the `pytest` framework was introduced as a test runner for the View tests.
+However, the **View layer**, implemented using Kivy, required a different approach. GUI components depend on an event-driven architecture, a graphical event loop, and platform-specific initialization. While the test cases themselves are still structured as `unittest.TestCase` classes, the `pytest` framework was introduced as a test runner for the View tests.
 
 The use of `pytest` was motivated by:
 - improved compatibility with Continuous Integration environments,
 - better control over environment variables and headless execution,
-- support for test markers to distinguish UI tests,
-- reliable execution of GUI-related tests across different operating systems.
+- support for test markers to distinguish UI tests.
 
 In summary, for the View layer `pytest` provided better support for fixtures, markers and CI execution, which helped address issues related to GUI testing in a headless environment.
 
 This hybrid approach allows the project to:
 - keep unit tests simple and standard where possible,
-- use a more flexible and robust testing infrastructure only where required by the GUI framework.
+- use a more flexible and robust testing infrastructure where required by the GUI framework.
 
 ## Testing (automated)
-Each group of tests is directly related to the functional requirements associated with task or note management, data persistence, and user interaction.
+Each group of tests is directly related to the functional requirements associated with task, note or topic management, data persistence, and user interaction.
 
 ### Unit testing
 
@@ -85,7 +84,7 @@ While full end-to-end testing with real user input and persistent storage was ou
 Manual acceptance tests were conducted to validate user-facing functionality, including:
 - creating and managing tasks (scheduling them, marking them as completed/not completed, deleting them)
 - creating and managing notes (editing the content of notes, deleting them)
-- creating and assigning topics
+- creating, managing and assigning topics
 - navigating between screens
 - verifying correct persistence of data across application runs
 
