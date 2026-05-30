@@ -12,7 +12,7 @@ The project is managed entirely on GitHub, which serves as both the code reposit
 
 To maintain a transparent development process, all communication regarding bugs or feature requests must be centralized through our GitHub Issues page. When reporting a problem, please include steps to reproduce the behavior and information about your operating system.
 
-For direct collaboration or urgent team coordination, please contact the lead maintainer directly via their [GitHub profile](https://github.com/annacampagna) or via e-mail (anna.campagna3@studio.unibo.it)
+For direct collaboration or urgent team coordination, please contact the lead maintainer directly via their [GitHub profile](https://github.com/annacampagna).
 
 ## Coding Standards and Conventions
 We follow PEP 8 standards for Python code style. To ensure consistency, we use descriptive `snake_case` for function and variable names, while classes must use `PascalCase`.
@@ -56,11 +56,11 @@ Once your code passes local tests, push your branch to the remote repository. Th
     git push origin feature/your-feature-name
     ```
 
-4. Pull Request and Peer Review
+4. Pull Request and Peer Review:
 After pushing your branch, navigate to the GitHub repository and open a Pull Request (PR) against the `main` branch.
 A project maintainer will review your logic, code style, and test coverage. If the maintainer requests changes, apply them locally, commit, and push again; the PR will update automatically.
 
-5. Relese (Authorized Maintainers Only)
+5. Relese (Authorized Maintainers Only):
 When a feature is merged and a new version is ready, maintainers trigger the CD workflow (`deploy.yml`) by pushing a version tag.
 
 Our repository is equipped with GitHub Actions that trigger on every push and pull request. The CI workflow (check.yml) enforces quality by running a matrix of Python versions and operating systems. The CD workflow (deploy.yml) is reserved for releases; when a version tag like v1.0.0 is pushed, the system automatically builds the package and publishes it to TestPyPI. **Please do not manually push tags unless you are authorized to manage official releases.**
